@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Check-in</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <main id="app">
+      <header>
+        <nav class="tabs">
+          <button data-tab="tracker" class="tab active">Tracker</button>
+          <button data-tab="dashboard" class="tab">Dashboard</button>
+        </nav>
+        <div class="user-switch">
+          <button data-user="kastri" class="user active">Kastri</button>
+          <button data-user="thomas" class="user">Thomas</button>
+        </div>
+      </header>
+
+      <section id="view-tracker" class="view">
+        <div class="status-card">
+          <div class="status-label" id="status-label">Ausgecheckt</div>
+          <div class="timer" id="timer">00:00:00</div>
+          <div class="status-meta" id="status-meta"></div>
+          <button id="action-btn" class="action">Einchecken</button>
+        </div>
+
+        <div class="comment-area hidden" id="comment-area">
+          <label for="comment">Was hast du gemacht?</label>
+          <textarea id="comment" rows="3" placeholder="Kurze Notiz"></textarea>
+          <div class="comment-actions">
+            <button id="cancel-checkout" class="ghost">Abbrechen</button>
+            <button id="confirm-checkout" class="action">Auschecken</button>
+          </div>
+        </div>
+
+        <section class="today">
+          <h2>Heute</h2>
+          <div class="today-summary" id="today-summary">0h 0min</div>
+          <ul class="session-list" id="today-list"></ul>
+        </section>
+      </section>
+
+      <section id="view-dashboard" class="view hidden">
+        <section class="week">
+          <h2 id="week-label">Diese Woche</h2>
+          <div class="week-grid" id="week-grid"></div>
+          <div class="week-stats" id="week-stats"></div>
+        </section>
+
+        <section class="all-sessions">
+          <h2>Sessions diese Woche</h2>
+          <ul class="session-list" id="week-list"></ul>
+        </section>
+      </section>
+
+      <footer>
+        <button id="settings-btn" class="ghost small">Token</button>
+        <span id="sync-state" class="sync"></span>
+      </footer>
+
+      <dialog id="token-dialog">
+        <form method="dialog">
+          <h3>GitHub Token</h3>
+          <p class="hint">
+            Fine-grained PAT für <code>kastriasani-gif/checkin-app</code> mit
+            <code>Contents: Read &amp; Write</code>. Token bleibt nur lokal in
+            diesem Browser.
+          </p>
+          <input
+            type="password"
+            id="token-input"
+            placeholder="github_pat_..."
+            autocomplete="off"
+          />
+          <div class="dialog-actions">
+            <button value="cancel" class="ghost">Abbrechen</button>
+            <button id="save-token" value="save" class="action">Speichern</button>
+          </div>
+        </form>
+      </dialog>
+    </main>
+
+    <script src="app.js" type="module"></script>
+  </body>
+</html>
