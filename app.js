@@ -39,7 +39,6 @@ const els = {
   todayList: document.getElementById("today-list"),
   weekGrid: document.getElementById("week-grid"),
   weekStats: document.getElementById("week-stats"),
-  weekList: document.getElementById("week-list"),
   weekLabel: document.getElementById("week-label"),
   syncState: document.getElementById("sync-state"),
   settingsBtn: document.getElementById("settings-btn"),
@@ -436,71 +435,6 @@ function renderDashboard() {
     els.weekStats.appendChild(card);
   });
 
-  // Full history: all sessions since START_DATE, grouped by date desc
-  els.weekList.innerHTML = "";
-  const allSessions = state.data.sessions
-    .filter((s) => new Date(s.started_at) >= startOfDay(START_DATE))
-    .sort((a, b) => new Date(b.started_at) - new Date(a.started_at));
-
-  if (allSessions.length === 0) {
-    const li = document.createElement("li");
-    li.className = "empty";
-    li.textContent = "Noch keine Sessions";
-    els.weekList.appendChild(li);
-    return;
-  }
-
-  // Group by date
-  const byDate = new Map();
-  allSessions.forEach((s) => {
-    const key = startOfDay(new Date(s.started_at)).toISOString();
-    if (!byDate.has(key)) byDate.set(key, []);
-    byDate.get(key).push(s);
-  });
-
-  byDate.forEach((sessions, dateKey) => {
-    const date = new Date(dateKey);
-    const header = document.createElement("li");
-    header.className = "date-header";
-    const kastriMs = sessions
-      .filter((s) => s.user === "kastri")
-      .reduce((sum, s) => sum + sessionDurationMs(s), 0);
-    const thomasMs = sessions
-      .filter((s) => s.user === "thomas")
-      .reduce((sum, s) => sum + sessionDurationMs(s), 0);
-    header.innerHTML = `
-      <span class="date-label">${fmtDayLabel(date)}</span>
-      <span class="date-totals">
-        ${kastriMs ? `kastri ${fmtHoursMinutes(kastriMs)}` : ""}
-        ${kastriMs && thomasMs ? "·" : ""}
-        ${thomasMs ? `thomas ${fmtHoursMinutes(thomasMs)}` : ""}
-      </span>
-    `;
-    els.weekList.appendChild(header);
-
-    sessions.forEach((x) => {
-      const li = document.createElement("li");
-      const time = document.createElement("span");
-      time.className = "session-time";
-      time.textContent = `${fmtClock(x.started_at)} – ${
-        x.ended_at ? fmtClock(x.ended_at) : "läuft"
-      }`;
-      const dur = document.createElement("span");
-      dur.className = "session-duration";
-      dur.textContent = fmtHoursMinutes(sessionDurationMs(x));
-      const c = document.createElement("span");
-      c.className = "session-comment";
-      const tag = `<span class="session-user-tag">${x.user}</span>`;
-      if (x.comment) {
-        c.innerHTML = tag + escapeHtml(x.comment);
-      } else {
-        c.innerHTML = tag + (x.ended_at ? "(kein Kommentar)" : "läuft...");
-        c.classList.add("placeholder");
-      }
-      li.append(time, dur, c);
-      els.weekList.appendChild(li);
-    });
-  });
 }
 
 function escapeHtml(s) {
