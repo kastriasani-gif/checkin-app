@@ -1,1 +1,11 @@
-{"sessions":[]}
+{
+  "sessions": [
+    {
+      "id": "b1359375-0c5b-44c2-a72b-be3a2fcd2bbc",
+      "user": "kastri",
+      "started_at": "2026-05-04T21:50:35.087Z",
+      "ended_at": null,
+      "comment": null
+    }
+  ]
+}
