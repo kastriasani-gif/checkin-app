@@ -8,6 +8,8 @@ const BRANCH = "main";
 const TOKEN_KEY = "checkin.token";
 const USER_KEY = "checkin.user";
 
+const START_DATE = new Date(2026, 4, 5); // 2026-05-05 (Mai = 4)
+
 const state = {
   user: localStorage.getItem(USER_KEY) || "kastri",
   token: localStorage.getItem(TOKEN_KEY) || "",
@@ -82,6 +84,24 @@ function startOfWeek(d) {
   const day = (x.getDay() + 6) % 7; // Monday = 0
   x.setDate(x.getDate() - day);
   return x;
+}
+
+function rollingWindowStart() {
+  const today = startOfDay(new Date());
+  const start = startOfDay(START_DATE);
+  return today < start ? start : today;
+}
+
+function fmtDayLabel(d) {
+  return d.toLocaleDateString("de-DE", {
+    weekday: "short",
+    day: "2-digit",
+    month: "2-digit",
+  });
+}
+
+function isBeforeStart() {
+  return startOfDay(new Date()) < startOfDay(START_DATE);
 }
 
 function sameDay(a, b) {
@@ -203,6 +223,7 @@ function activeSession() {
 
 async function checkIn() {
   if (activeSession()) return;
+  if (isBeforeStart()) return;
   const session = {
     id: crypto.randomUUID(),
     user: state.user,
@@ -261,12 +282,21 @@ function renderTracker() {
     )
     .sort((a, b) => new Date(b.started_at) - new Date(a.started_at));
 
+  els.actionBtn.disabled = false;
   if (s) {
     els.statusCard.classList.add("active");
     els.statusLabel.textContent = "Eingecheckt";
     els.statusMeta.textContent = `seit ${fmtClock(s.started_at)}`;
     els.actionBtn.textContent = "Auschecken";
     els.actionBtn.onclick = beginCheckout;
+  } else if (isBeforeStart()) {
+    els.statusCard.classList.remove("active");
+    els.statusLabel.textContent = "Noch nicht gestartet";
+    els.statusMeta.textContent = `Start am ${START_DATE.toLocaleDateString("de-DE", { day: "2-digit", month: "2-digit", year: "numeric" })}`;
+    els.timer.textContent = "00:00:00";
+    els.actionBtn.textContent = "Einchecken";
+    els.actionBtn.disabled = true;
+    els.actionBtn.onclick = null;
   } else {
     els.statusCard.classList.remove("active");
     els.statusLabel.textContent = "Ausgecheckt";
@@ -313,16 +343,16 @@ function renderTracker() {
 }
 
 function renderDashboard() {
-  const weekStart = startOfWeek(new Date());
+  const windowStart = rollingWindowStart();
   const days = Array.from({ length: 7 }, (_, i) => {
-    const d = new Date(weekStart);
+    const d = new Date(windowStart);
     d.setDate(d.getDate() + i);
     return d;
   });
   const dayNames = ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"];
   const users = ["kastri", "thomas"];
 
-  els.weekLabel.textContent = `Woche ${weekStart.toLocaleDateString("de-DE", {
+  els.weekLabel.textContent = `Aktuelle 7 Tage: ${days[0].toLocaleDateString("de-DE", {
     day: "2-digit",
     month: "2-digit",
   })} – ${days[6].toLocaleDateString("de-DE", {
@@ -338,11 +368,12 @@ function renderDashboard() {
   els.weekGrid.appendChild(corner);
 
   const today = new Date();
-  days.forEach((d, i) => {
+  days.forEach((d) => {
     const cell = document.createElement("div");
     cell.className = "week-cell header";
     if (sameDay(d, today)) cell.classList.add("today");
-    cell.innerHTML = `${dayNames[i]}<span class="day-label">${d.getDate()}.${
+    const wd = dayNames[(d.getDay() + 6) % 7];
+    cell.innerHTML = `${wd}<span class="day-label">${d.getDate()}.${
       d.getMonth() + 1
     }</span>`;
     els.weekGrid.appendChild(cell);
@@ -369,16 +400,16 @@ function renderDashboard() {
     });
   });
 
-  // Weekly stats
+  // 7-day window stats
   els.weekStats.innerHTML = "";
-  const weekEnd = new Date(weekStart);
-  weekEnd.setDate(weekEnd.getDate() + 7);
+  const windowEnd = new Date(windowStart);
+  windowEnd.setDate(windowEnd.getDate() + 7);
   users.forEach((u) => {
     const userSessions = state.data.sessions.filter(
       (s) =>
         s.user === u &&
-        new Date(s.started_at) >= weekStart &&
-        new Date(s.started_at) < weekEnd
+        new Date(s.started_at) >= windowStart &&
+        new Date(s.started_at) < windowEnd
     );
     const totalMs = userSessions.reduce((sum, s) => sum + sessionDurationMs(s), 0);
     const daysMet = days.filter((d) => {
@@ -397,29 +428,55 @@ function renderDashboard() {
     els.weekStats.appendChild(card);
   });
 
-  // Week list
+  // Full history: all sessions since START_DATE, grouped by date desc
   els.weekList.innerHTML = "";
-  const weekSessions = state.data.sessions
-    .filter(
-      (s) =>
-        new Date(s.started_at) >= weekStart && new Date(s.started_at) < weekEnd
-    )
+  const allSessions = state.data.sessions
+    .filter((s) => new Date(s.started_at) >= startOfDay(START_DATE))
     .sort((a, b) => new Date(b.started_at) - new Date(a.started_at));
 
-  if (weekSessions.length === 0) {
+  if (allSessions.length === 0) {
     const li = document.createElement("li");
     li.className = "empty";
-    li.textContent = "Noch keine Sessions diese Woche";
+    li.textContent = "Noch keine Sessions";
     els.weekList.appendChild(li);
-  } else {
-    weekSessions.forEach((x) => {
+    return;
+  }
+
+  // Group by date
+  const byDate = new Map();
+  allSessions.forEach((s) => {
+    const key = startOfDay(new Date(s.started_at)).toISOString();
+    if (!byDate.has(key)) byDate.set(key, []);
+    byDate.get(key).push(s);
+  });
+
+  byDate.forEach((sessions, dateKey) => {
+    const date = new Date(dateKey);
+    const header = document.createElement("li");
+    header.className = "date-header";
+    const kastriMs = sessions
+      .filter((s) => s.user === "kastri")
+      .reduce((sum, s) => sum + sessionDurationMs(s), 0);
+    const thomasMs = sessions
+      .filter((s) => s.user === "thomas")
+      .reduce((sum, s) => sum + sessionDurationMs(s), 0);
+    header.innerHTML = `
+      <span class="date-label">${fmtDayLabel(date)}</span>
+      <span class="date-totals">
+        ${kastriMs ? `kastri ${fmtHoursMinutes(kastriMs)}` : ""}
+        ${kastriMs && thomasMs ? "·" : ""}
+        ${thomasMs ? `thomas ${fmtHoursMinutes(thomasMs)}` : ""}
+      </span>
+    `;
+    els.weekList.appendChild(header);
+
+    sessions.forEach((x) => {
       const li = document.createElement("li");
       const time = document.createElement("span");
       time.className = "session-time";
-      const d = new Date(x.started_at);
-      time.textContent = `${dayNames[(d.getDay() + 6) % 7]} ${fmtClock(
-        x.started_at
-      )} – ${x.ended_at ? fmtClock(x.ended_at) : "läuft"}`;
+      time.textContent = `${fmtClock(x.started_at)} – ${
+        x.ended_at ? fmtClock(x.ended_at) : "läuft"
+      }`;
       const dur = document.createElement("span");
       dur.className = "session-duration";
       dur.textContent = fmtHoursMinutes(sessionDurationMs(x));
@@ -435,7 +492,7 @@ function renderDashboard() {
       li.append(time, dur, c);
       els.weekList.appendChild(li);
     });
-  }
+  });
 }
 
 function escapeHtml(s) {

@@ -250,6 +250,30 @@ textarea:focus {
   padding: 24px;
 }
 
+.session-list li.date-header {
+  background: var(--bg);
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 8px 16px;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.session-list li.date-header .date-label {
+  color: var(--text);
+  font-weight: 600;
+}
+
+.session-list li.date-header .date-totals {
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+  text-transform: none;
+  letter-spacing: 0;
+  font-size: 12px;
+}
+
 .session-time {
   font-variant-numeric: tabular-nums;
   color: var(--muted);
