@@ -480,6 +480,10 @@ function openTokenDialog(hint) {
   if (hint) setSync(hint, true);
   els.tokenInput.value = state.token || "";
   els.tokenDialog.showModal();
+  setTimeout(() => {
+    els.tokenInput.focus();
+    els.tokenInput.select();
+  }, 50);
 }
 
 els.saveToken.addEventListener("click", (e) => {
