@@ -171,6 +171,11 @@ async function saveData() {
       render();
       return false;
     }
+    if (res.status === 401 || res.status === 403) {
+      setSync("Token ungültig oder ohne Schreibrechte", true);
+      openTokenDialog("Token ungültig — siehe README für Setup");
+      return false;
+    }
     if (!res.ok) {
       const err = await res.text();
       throw new Error(`GitHub ${res.status}: ${err}`);

@@ -416,8 +416,22 @@ dialog h3 {
 dialog .hint {
   font-size: 13px;
   color: var(--muted);
-  margin: 0 0 16px;
+  margin: 0 0 12px;
   line-height: 1.5;
+}
+
+dialog ul.hint {
+  padding-left: 20px;
+  margin: 0 0 12px;
+}
+
+dialog ul.hint li {
+  margin-bottom: 2px;
+}
+
+dialog a {
+  color: var(--text);
+  text-decoration: underline;
 }
 
 dialog code {
