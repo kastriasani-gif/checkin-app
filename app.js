@@ -34,6 +34,7 @@ const els = {
   commentInput: document.getElementById("comment"),
   confirmCheckout: document.getElementById("confirm-checkout"),
   cancelCheckout: document.getElementById("cancel-checkout"),
+  todaySection: document.getElementById("today-section"),
   todaySummary: document.getElementById("today-summary"),
   todayList: document.getElementById("today-list"),
   weekGrid: document.getElementById("week-grid"),
@@ -305,6 +306,13 @@ function renderTracker() {
     els.actionBtn.textContent = "Einchecken";
     els.actionBtn.onclick = checkIn;
   }
+
+  // Hide "Heute" section entirely before start date
+  if (isBeforeStart()) {
+    els.todaySection.classList.add("hidden");
+    return;
+  }
+  els.todaySection.classList.remove("hidden");
 
   // Today summary
   const totalMs = today.reduce((sum, x) => sum + sessionDurationMs(x), 0);
