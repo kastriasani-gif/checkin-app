@@ -15,12 +15,14 @@ GitHub Pages, Daten in `data.json` über die GitHub Contents API.
 
 1. Repo `kastriasani-gif/checkin-app` (public)
 2. GitHub Pages aus `main` Branch root
-3. Beide User legen einmal einen **Fine-grained PAT** an:
+3. Kastri legt einmalig einen **Fine-grained PAT** an:
    - https://github.com/settings/personal-access-tokens/new
    - Repository access: Only `kastriasani-gif/checkin-app`
    - Permissions: `Contents: Read and write`
-   - Token in der App über "Token" unten rechts speichern (bleibt nur lokal in
-     diesem Browser)
+   - In der App: "Token" unten rechts → einfügen → Speichern
+4. Für Thomas: in der App auf "Token" → "Setup-Link kopieren" → den Link an
+   Thomas schicken. Beim Öffnen des Links wird der Token in seinem Browser
+   automatisch gespeichert.
 
 ## Lokal testen
 

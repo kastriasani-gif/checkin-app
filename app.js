@@ -43,6 +43,7 @@ const els = {
   tokenDialog: document.getElementById("token-dialog"),
   tokenInput: document.getElementById("token-input"),
   saveToken: document.getElementById("save-token"),
+  shareLink: document.getElementById("share-link"),
 };
 
 // --- Time helpers ---
@@ -500,6 +501,37 @@ els.saveToken.addEventListener("click", (e) => {
   }
 });
 
+// Allow sharing setup via URL: ?token=github_pat_...
+function importTokenFromUrl() {
+  const params = new URLSearchParams(window.location.search);
+  const t = params.get("token");
+  if (t) {
+    state.token = t;
+    localStorage.setItem(TOKEN_KEY, t);
+    params.delete("token");
+    const clean =
+      window.location.pathname +
+      (params.toString() ? "?" + params.toString() : "");
+    window.history.replaceState({}, "", clean);
+    setSync("Token aus Link gespeichert");
+  }
+}
+
+// Copy a setup link with the current token to share with the other user.
+async function copySetupLink() {
+  if (!state.token) {
+    openTokenDialog("Erst Token setzen, dann teilen.");
+    return;
+  }
+  const url = `${window.location.origin}${window.location.pathname}?token=${encodeURIComponent(state.token)}`;
+  try {
+    await navigator.clipboard.writeText(url);
+    setSync("Setup-Link kopiert");
+  } catch {
+    prompt("Setup-Link kopieren:", url);
+  }
+}
+
 // --- Wire up events ---
 
 els.tabs.forEach((b) =>
@@ -511,6 +543,10 @@ els.userBtns.forEach((b) =>
 els.confirmCheckout.addEventListener("click", confirmCheckout);
 els.cancelCheckout.addEventListener("click", cancelCheckout);
 els.settingsBtn.addEventListener("click", () => openTokenDialog());
+els.shareLink.addEventListener("click", (e) => {
+  e.preventDefault();
+  copySetupLink();
+});
 
 // Refresh from server on tab focus (catches changes from the other user).
 document.addEventListener("visibilitychange", async () => {
@@ -523,6 +559,7 @@ document.addEventListener("visibilitychange", async () => {
 // --- Init ---
 
 async function init() {
+  importTokenFromUrl();
   // Set initial UI from persisted user
   els.userBtns.forEach((b) =>
     b.classList.toggle("active", b.dataset.user === state.user)
