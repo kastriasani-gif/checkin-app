@@ -76,10 +76,11 @@ function startOfWeek(d) {
   return x;
 }
 
-function rollingWindowStart() {
+function dashboardWindowStart() {
   const today = startOfDay(new Date());
   const start = startOfDay(START_DATE);
-  return today < start ? start : today;
+  const weekStart = startOfWeek(today);
+  return weekStart < start ? start : weekStart;
 }
 
 function fmtDayLabel(d) {
@@ -311,7 +312,7 @@ function renderTracker() {
 }
 
 function renderDashboard() {
-  const windowStart = rollingWindowStart();
+  const windowStart = dashboardWindowStart();
   const days = Array.from({ length: 7 }, (_, i) => {
     const d = new Date(windowStart);
     d.setDate(d.getDate() + i);
@@ -320,7 +321,7 @@ function renderDashboard() {
   const dayNames = ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"];
   const users = ["kastri", "thomas"];
 
-  els.weekLabel.textContent = `Aktuelle 7 Tage: ${days[0].toLocaleDateString("de-DE", {
+  els.weekLabel.textContent = `Diese Woche: ${days[0].toLocaleDateString("de-DE", {
     day: "2-digit",
     month: "2-digit",
   })} – ${days[6].toLocaleDateString("de-DE", {
