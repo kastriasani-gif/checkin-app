@@ -1,7 +1,8 @@
 # Check-in App
 
-Minimalistische Check-in App für zwei User (Kastri und Thomas). Statisch auf
-GitHub Pages, Daten in `data.json` über die GitHub Contents API.
+Minimalistische Check-in App für zwei User (Kastri und Thomas). Die Oberfläche
+ist statisch, Schreibzugriffe laufen über eine kleine Serverless API. Benutzer
+brauchen keinen GitHub Token im Browser.
 
 ## Regeln
 
@@ -14,15 +15,19 @@ GitHub Pages, Daten in `data.json` über die GitHub Contents API.
 ## Setup
 
 1. Repo `kastriasani-gif/checkin-app` (public)
-2. GitHub Pages aus `main` Branch root
-3. Kastri legt einmalig einen **Fine-grained PAT** an:
+2. Deployment auf Vercel, damit `/api/sessions` verfügbar ist
+3. Kastri legt einmalig einen **Fine-grained PAT** für den Server an:
    - https://github.com/settings/personal-access-tokens/new
    - Repository access: Only `kastriasani-gif/checkin-app`
    - Permissions: `Contents: Read and write`
-   - In der App: "Token" unten rechts → einfügen → Speichern
-4. Für Thomas: in der App auf "Token" → "Setup-Link kopieren" → den Link an
-   Thomas schicken. Beim Öffnen des Links wird der Token in seinem Browser
-   automatisch gespeichert.
+4. In Vercel als Environment Variable setzen:
+   - `GITHUB_TOKEN`: der Fine-grained PAT
+   - optional `ALLOWED_ORIGINS`: kommagetrennte erlaubte Origins, z.B.
+     `https://checkin-app.vercel.app,https://kastriasani-gif.github.io`
+
+Wenn die App weiter auf GitHub Pages laufen soll, muss vor `app.js` ein
+`window.CHECKIN_API_URL` gesetzt werden, das auf die Vercel Function zeigt.
+Am einfachsten ist aber, die App direkt über Vercel zu öffnen.
 
 ## Lokal testen
 

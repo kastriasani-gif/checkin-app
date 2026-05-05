@@ -1,18 +1,13 @@
-// Check-in app — pure browser, GitHub Contents API as backend.
+// Check-in app. Writes go through a small server API so users do not need GitHub tokens.
 
-const REPO_OWNER = "kastriasani-gif";
-const REPO_NAME = "checkin-app";
-const DATA_PATH = "data.json";
-const BRANCH = "main";
-
-const TOKEN_KEY = "checkin.token";
 const USER_KEY = "checkin.user";
+const API_ENDPOINT = window.CHECKIN_API_URL || "/api/sessions";
+const DATA_FALLBACK_URL = "data.json";
 
 const START_DATE = new Date(2026, 4, 5); // 2026-05-05 (Mai = 4)
 
 const state = {
   user: localStorage.getItem(USER_KEY) || "kastri",
-  token: localStorage.getItem(TOKEN_KEY) || "",
   data: { sessions: [] },
   sha: null,
   loading: false,
@@ -41,11 +36,6 @@ const els = {
   weekStats: document.getElementById("week-stats"),
   weekLabel: document.getElementById("week-label"),
   syncState: document.getElementById("sync-state"),
-  settingsBtn: document.getElementById("settings-btn"),
-  tokenDialog: document.getElementById("token-dialog"),
-  tokenInput: document.getElementById("token-input"),
-  saveToken: document.getElementById("save-token"),
-  shareLink: document.getElementById("share-link"),
 };
 
 // --- Time helpers ---
@@ -114,10 +104,7 @@ function sessionDurationMs(s, now = Date.now()) {
   return Math.max(0, end - start);
 }
 
-// --- Data layer (GitHub Contents API) ---
-
-const API_BASE = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${DATA_PATH}`;
-const RAW_BASE = `https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/${BRANCH}/${DATA_PATH}`;
+// --- Data layer ---
 
 function setSync(text, isError = false) {
   els.syncState.textContent = text;
@@ -128,29 +115,21 @@ async function loadData() {
   state.loading = true;
   setSync("Lade...");
   try {
-    // Always go through API to also capture sha (for future writes).
-    const headers = { Accept: "application/vnd.github+json" };
-    if (state.token) headers.Authorization = `Bearer ${state.token}`;
-    const res = await fetch(`${API_BASE}?ref=${BRANCH}`, { headers });
-    if (res.status === 404) {
-      state.data = { sessions: [] };
-      state.sha = null;
-      setSync("Leer (noch nichts gespeichert)");
-      return;
-    }
+    const res = await fetch(`${API_ENDPOINT}?t=${Date.now()}`, {
+      cache: "no-store",
+    });
     if (!res.ok) throw new Error(`GitHub ${res.status}`);
     const json = await res.json();
     state.sha = json.sha;
-    const decoded = decodeURIComponent(escape(atob(json.content.replace(/\n/g, ""))));
-    const parsed = JSON.parse(decoded);
+    const parsed = json.data;
     state.data = parsed && Array.isArray(parsed.sessions) ? parsed : { sessions: [] };
     setSync(`Geladen (${state.data.sessions.length} Sessions)`);
   } catch (e) {
     console.error(e);
     setSync("Fehler beim Laden", true);
-    // Fallback: try raw URL (read-only) — useful before token is set.
+    // Fallback keeps GitHub Pages usable for read-only viewing while the API is being set up.
     try {
-      const res = await fetch(`${RAW_BASE}?t=${Date.now()}`);
+      const res = await fetch(`${DATA_FALLBACK_URL}?t=${Date.now()}`);
       if (res.ok) {
         state.data = await res.json();
         setSync("Geladen (read-only)");
@@ -162,28 +141,15 @@ async function loadData() {
 }
 
 async function saveData() {
-  if (!state.token) {
-    openTokenDialog("Token fehlt — bitte einrichten.");
-    return false;
-  }
   state.saving = true;
   setSync("Speichere...");
   try {
-    const content = btoa(unescape(encodeURIComponent(JSON.stringify(state.data, null, 2))));
-    const body = {
-      message: `update sessions (${state.user})`,
-      content,
-      branch: BRANCH,
-    };
-    if (state.sha) body.sha = state.sha;
-    const res = await fetch(API_BASE, {
+    const res = await fetch(API_ENDPOINT, {
       method: "PUT",
       headers: {
-        Authorization: `Bearer ${state.token}`,
-        Accept: "application/vnd.github+json",
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(body),
+      body: JSON.stringify({ data: state.data, sha: state.sha }),
     });
     if (res.status === 409) {
       setSync("Konflikt — lade neu", true);
@@ -191,17 +157,12 @@ async function saveData() {
       render();
       return false;
     }
-    if (res.status === 401 || res.status === 403) {
-      setSync("Token ungültig oder ohne Schreibrechte", true);
-      openTokenDialog("Token ungültig — siehe README für Setup");
-      return false;
-    }
     if (!res.ok) {
-      const err = await res.text();
-      throw new Error(`GitHub ${res.status}: ${err}`);
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.error || `Speichern fehlgeschlagen (${res.status})`);
     }
     const json = await res.json();
-    state.sha = json.content.sha;
+    state.sha = json.sha;
     setSync("Gespeichert");
     return true;
   } catch (e) {
@@ -479,63 +440,6 @@ function switchUser(user) {
   render();
 }
 
-// --- Token dialog ---
-
-function openTokenDialog(hint) {
-  if (hint) setSync(hint, true);
-  els.tokenInput.value = state.token || "";
-  els.tokenDialog.showModal();
-  setTimeout(() => {
-    els.tokenInput.focus();
-    els.tokenInput.select();
-  }, 50);
-}
-
-els.saveToken.addEventListener("click", (e) => {
-  e.preventDefault();
-  const v = els.tokenInput.value.trim();
-  if (v) {
-    state.token = v;
-    localStorage.setItem(TOKEN_KEY, v);
-    els.tokenDialog.close();
-    setSync("Token gespeichert");
-    init();
-  } else {
-    els.tokenDialog.close();
-  }
-});
-
-// Allow sharing setup via URL: ?token=github_pat_...
-function importTokenFromUrl() {
-  const params = new URLSearchParams(window.location.search);
-  const t = params.get("token");
-  if (t) {
-    state.token = t;
-    localStorage.setItem(TOKEN_KEY, t);
-    params.delete("token");
-    const clean =
-      window.location.pathname +
-      (params.toString() ? "?" + params.toString() : "");
-    window.history.replaceState({}, "", clean);
-    setSync("Token aus Link gespeichert");
-  }
-}
-
-// Copy a setup link with the current token to share with the other user.
-async function copySetupLink() {
-  if (!state.token) {
-    openTokenDialog("Erst Token setzen, dann teilen.");
-    return;
-  }
-  const url = `${window.location.origin}${window.location.pathname}?token=${encodeURIComponent(state.token)}`;
-  try {
-    await navigator.clipboard.writeText(url);
-    setSync("Setup-Link kopiert");
-  } catch {
-    prompt("Setup-Link kopieren:", url);
-  }
-}
-
 // --- Wire up events ---
 
 els.tabs.forEach((b) =>
@@ -546,11 +450,6 @@ els.userBtns.forEach((b) =>
 );
 els.confirmCheckout.addEventListener("click", confirmCheckout);
 els.cancelCheckout.addEventListener("click", cancelCheckout);
-els.settingsBtn.addEventListener("click", () => openTokenDialog());
-els.shareLink.addEventListener("click", (e) => {
-  e.preventDefault();
-  copySetupLink();
-});
 
 // Refresh from server on tab focus (catches changes from the other user).
 document.addEventListener("visibilitychange", async () => {
@@ -563,7 +462,6 @@ document.addEventListener("visibilitychange", async () => {
 // --- Init ---
 
 async function init() {
-  importTokenFromUrl();
   // Set initial UI from persisted user
   els.userBtns.forEach((b) =>
     b.classList.toggle("active", b.dataset.user === state.user)

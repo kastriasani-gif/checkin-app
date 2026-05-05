@@ -53,41 +53,9 @@
       </section>
 
       <footer>
-        <button id="settings-btn" class="ghost small">Token</button>
+        <span></span>
         <span id="sync-state" class="sync"></span>
       </footer>
-
-      <dialog id="token-dialog">
-        <form method="dialog">
-          <h3>GitHub Token</h3>
-          <p class="hint">
-            Fine-grained PAT für <code>kastriasani-gif/checkin-app</code>.
-            <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">Token erstellen</a>
-            mit:
-          </p>
-          <ul class="hint">
-            <li>Resource owner: <code>kastriasani-gif</code></li>
-            <li>Repository access: Only <code>checkin-app</code></li>
-            <li>Permissions → Contents: <code>Read and write</code></li>
-          </ul>
-          <p class="hint">Token bleibt nur lokal in diesem Browser.</p>
-          <input
-            type="text"
-            id="token-input"
-            placeholder="github_pat_..."
-            spellcheck="false"
-            autocapitalize="off"
-            autocorrect="off"
-          />
-          <div class="dialog-actions">
-            <button id="share-link" value="cancel" class="ghost" type="button">
-              Setup-Link kopieren
-            </button>
-            <button value="cancel" class="ghost">Abbrechen</button>
-            <button id="save-token" value="save" class="action">Speichern</button>
-          </div>
-        </form>
-      </dialog>
     </main>
 
     <script src="app.js" type="module"></script>
