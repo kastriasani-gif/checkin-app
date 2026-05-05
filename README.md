@@ -15,7 +15,8 @@ brauchen keinen GitHub Token im Browser.
 ## Setup
 
 1. Repo `kastriasani-gif/checkin-app` (public)
-2. Deployment auf Vercel, damit `/api/sessions` verfügbar ist
+2. Deployment auf Vercel, damit `/api/sessions` verfügbar ist:
+   - https://checkin-app-pi-ten.vercel.app
 3. Kastri legt einmalig einen **Fine-grained PAT** für den Server an:
    - https://github.com/settings/personal-access-tokens/new
    - Repository access: Only `kastriasani-gif/checkin-app`
@@ -23,7 +24,7 @@ brauchen keinen GitHub Token im Browser.
 4. In Vercel als Environment Variable setzen:
    - `GITHUB_TOKEN`: der Fine-grained PAT
    - optional `ALLOWED_ORIGINS`: kommagetrennte erlaubte Origins, z.B.
-     `https://checkin-app.vercel.app,https://kastriasani-gif.github.io`
+     `https://checkin-app-pi-ten.vercel.app,https://kastriasani-gif.github.io`
 
 Wenn die App weiter auf GitHub Pages laufen soll, muss vor `app.js` ein
 `window.CHECKIN_API_URL` gesetzt werden, das auf die Vercel Function zeigt.
