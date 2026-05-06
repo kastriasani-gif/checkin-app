@@ -32,9 +32,14 @@ const els = {
   todaySection: document.getElementById("today-section"),
   todaySummary: document.getElementById("today-summary"),
   todayList: document.getElementById("today-list"),
+  recentSection: document.getElementById("recent-section"),
+  recentList: document.getElementById("recent-list"),
   weekGrid: document.getElementById("week-grid"),
   weekStats: document.getElementById("week-stats"),
   weekLabel: document.getElementById("week-label"),
+  dashboardHistory: document.getElementById("dashboard-history"),
+  historyLabel: document.getElementById("history-label"),
+  historyList: document.getElementById("history-list"),
   syncState: document.getElementById("sync-state"),
 };
 
@@ -99,10 +104,51 @@ function sameDay(a, b) {
   return startOfDay(a).getTime() === startOfDay(b).getTime();
 }
 
+function dayKey(d) {
+  return String(startOfDay(d).getTime());
+}
+
 function sessionDurationMs(s, now = Date.now()) {
   const start = new Date(s.started_at).getTime();
   const end = s.ended_at ? new Date(s.ended_at).getTime() : now;
   return Math.max(0, end - start);
+}
+
+function createSessionItem(x) {
+  const li = document.createElement("li");
+  const time = document.createElement("span");
+  time.className = "session-time";
+  time.textContent = `${fmtClock(x.started_at)} – ${
+    x.ended_at ? fmtClock(x.ended_at) : "läuft"
+  }`;
+  const dur = document.createElement("span");
+  dur.className = "session-duration";
+  dur.textContent = fmtHoursMinutes(sessionDurationMs(x));
+  const c = document.createElement("span");
+  c.className = "session-comment";
+  if (x.comment) {
+    c.textContent = x.comment;
+  } else {
+    c.textContent = x.ended_at ? "(kein Kommentar)" : "läuft...";
+    c.classList.add("placeholder");
+  }
+  li.append(time, dur, c);
+  return li;
+}
+
+function createDateHeader(d, sessions) {
+  const li = document.createElement("li");
+  li.className = "date-header";
+  const label = document.createElement("span");
+  label.className = "date-label";
+  label.textContent = fmtDayLabel(d);
+  const totals = document.createElement("span");
+  totals.className = "date-totals";
+  totals.textContent = fmtHoursMinutes(
+    sessions.reduce((sum, x) => sum + sessionDurationMs(x), 0)
+  );
+  li.append(label, totals);
+  return li;
 }
 
 // --- Data layer ---
@@ -288,27 +334,40 @@ function renderTracker() {
     els.todayList.appendChild(li);
   } else {
     today.forEach((x) => {
-      const li = document.createElement("li");
-      const time = document.createElement("span");
-      time.className = "session-time";
-      time.textContent = `${fmtClock(x.started_at)} – ${
-        x.ended_at ? fmtClock(x.ended_at) : "läuft"
-      }`;
-      const dur = document.createElement("span");
-      dur.className = "session-duration";
-      dur.textContent = fmtHoursMinutes(sessionDurationMs(x));
-      const c = document.createElement("span");
-      c.className = "session-comment";
-      if (x.comment) {
-        c.textContent = x.comment;
-      } else {
-        c.textContent = x.ended_at ? "(kein Kommentar)" : "läuft...";
-        c.classList.add("placeholder");
-      }
-      li.append(time, dur, c);
-      els.todayList.appendChild(li);
+      els.todayList.appendChild(createSessionItem(x));
     });
   }
+
+  renderRecentHistory();
+}
+
+function renderRecentHistory() {
+  const today = startOfDay(new Date());
+  const sessions = state.data.sessions
+    .filter((x) => x.user === state.user && startOfDay(new Date(x.started_at)) < today)
+    .sort((a, b) => new Date(b.started_at) - new Date(a.started_at));
+
+  els.recentList.innerHTML = "";
+  if (sessions.length === 0) {
+    els.recentSection.classList.add("hidden");
+    return;
+  }
+
+  els.recentSection.classList.remove("hidden");
+  const grouped = new Map();
+  sessions.forEach((x) => {
+    const key = dayKey(new Date(x.started_at));
+    if (!grouped.has(key)) grouped.set(key, []);
+    grouped.get(key).push(x);
+  });
+
+  grouped.forEach((items, key) => {
+    const d = new Date(Number(key));
+    els.recentList.appendChild(createDateHeader(d, items));
+    items
+      .sort((a, b) => new Date(b.started_at) - new Date(a.started_at))
+      .forEach((x) => els.recentList.appendChild(createSessionItem(x)));
+  });
 }
 
 function renderDashboard() {
@@ -363,7 +422,27 @@ function renderDashboard() {
         )
         .reduce((sum, s) => sum + sessionDurationMs(s), 0);
       const hours = dayMs / 3600000;
-      if (dayMs > 0) cell.textContent = fmtHoursMinutes(dayMs);
+      if (dayMs > 0) {
+        cell.textContent = fmtHoursMinutes(dayMs);
+        cell.classList.add("has-history");
+        cell.setAttribute("role", "button");
+        cell.setAttribute("tabindex", "0");
+        cell.setAttribute("aria-label", `${u}, ${fmtDayLabel(d)}, ${fmtHoursMinutes(dayMs)} anzeigen`);
+        if (
+          state.dashboardSelection &&
+          state.dashboardSelection.user === u &&
+          state.dashboardSelection.day === dayKey(d)
+        ) {
+          cell.classList.add("selected");
+        }
+        cell.addEventListener("click", () => selectDashboardDay(u, d));
+        cell.addEventListener("keydown", (e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            selectDashboardDay(u, d);
+          }
+        });
+      }
       if (hours >= 1) cell.classList.add("met");
       els.weekGrid.appendChild(cell);
     });
@@ -397,16 +476,44 @@ function renderDashboard() {
     els.weekStats.appendChild(card);
   });
 
+  renderDashboardHistory();
 }
 
-function escapeHtml(s) {
-  return s.replace(/[&<>"']/g, (c) => ({
-    "&": "&amp;",
-    "<": "&lt;",
-    ">": "&gt;",
-    '"': "&quot;",
-    "'": "&#39;",
-  })[c]);
+function sessionsForUserDay(user, d) {
+  return state.data.sessions
+    .filter((s) => s.user === user && sameDay(new Date(s.started_at), d))
+    .sort((a, b) => new Date(a.started_at) - new Date(b.started_at));
+}
+
+function selectDashboardDay(user, d) {
+  state.dashboardSelection = { user, day: dayKey(d) };
+  renderDashboard();
+}
+
+function renderDashboardHistory() {
+  const selection = state.dashboardSelection;
+  if (!selection) {
+    els.dashboardHistory.classList.add("hidden");
+    els.historyList.innerHTML = "";
+    return;
+  }
+
+  const selectedDay = new Date(Number(selection.day));
+  const sessions = sessionsForUserDay(selection.user, selectedDay);
+  if (sessions.length === 0) {
+    state.dashboardSelection = null;
+    els.dashboardHistory.classList.add("hidden");
+    els.historyList.innerHTML = "";
+    return;
+  }
+
+  els.dashboardHistory.classList.remove("hidden");
+  els.historyLabel.textContent = `${selection.user} · ${fmtDayLabel(selectedDay)}`;
+  els.historyList.innerHTML = "";
+
+  sessions.forEach((x) => {
+    els.historyList.appendChild(createSessionItem(x));
+  });
 }
 
 function render() {

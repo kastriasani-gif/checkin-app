@@ -351,8 +351,25 @@ textarea:focus {
   font-weight: 600;
 }
 
+.week-cell.has-history {
+  cursor: pointer;
+}
+
+.week-cell.has-history:hover,
+.week-cell.has-history:focus-visible,
+.week-cell.selected {
+  outline: none;
+  box-shadow: inset 0 0 0 2px var(--accent);
+}
+
 .week-cell.today {
   box-shadow: inset 0 -2px 0 var(--text);
+}
+
+.week-cell.today.has-history:hover,
+.week-cell.today.has-history:focus-visible,
+.week-cell.today.selected {
+  box-shadow: inset 0 -2px 0 var(--text), inset 0 0 0 2px var(--accent);
 }
 
 .week-cell .day-label {
@@ -393,6 +410,10 @@ textarea:focus {
   font-size: 13px;
   color: var(--muted);
   margin-top: 4px;
+}
+
+.history {
+  margin-top: 24px;
 }
 
 footer {
