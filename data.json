@@ -1,13 +1,6 @@
 {
   "sessions": [
     {
-      "id": "b1359375-0c5b-44c2-a72b-be3a2fcd2bbc",
-      "user": "kastri",
-      "started_at": "2026-05-04T21:50:35.087Z",
-      "ended_at": "2026-05-04T21:51:40.304Z",
-      "comment": "nichts"
-    },
-    {
       "id": "e8e5df30-0f1b-48bf-9b36-97c166dbd8dd",
       "user": "kastri",
       "started_at": "2026-05-05T04:40:10.619Z",
