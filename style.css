@@ -192,6 +192,11 @@ button.small {
   margin-bottom: 8px;
 }
 
+.optional {
+  color: var(--muted);
+  font-size: 12px;
+}
+
 textarea {
   width: 100%;
   border: 1px solid var(--border);
@@ -238,7 +243,7 @@ textarea:focus {
   background: var(--surface);
   padding: 14px 16px;
   display: grid;
-  grid-template-columns: 120px 80px 1fr;
+  grid-template-columns: 120px 80px 1fr auto;
   gap: 16px;
   align-items: baseline;
 }
@@ -293,6 +298,28 @@ textarea:focus {
 .session-comment.placeholder {
   color: var(--muted);
   font-style: italic;
+}
+
+.session-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.delete-session {
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  color: var(--danger);
+  cursor: pointer;
+  font: inherit;
+  font-size: 12px;
+  padding: 4px 8px;
+}
+
+.delete-session:hover,
+.delete-session:focus-visible {
+  background: #f7eeee;
+  outline: none;
 }
 
 .session-user-tag {
@@ -525,5 +552,8 @@ dialog input:focus {
   .session-list li {
     grid-template-columns: 1fr;
     gap: 4px;
+  }
+  .session-actions {
+    justify-content: flex-start;
   }
 }

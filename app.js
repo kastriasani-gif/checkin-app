@@ -132,7 +132,17 @@ function createSessionItem(x) {
     c.textContent = x.ended_at ? "(kein Kommentar)" : "läuft...";
     c.classList.add("placeholder");
   }
-  li.append(time, dur, c);
+  const actions = document.createElement("span");
+  actions.className = "session-actions";
+  const deleteBtn = document.createElement("button");
+  deleteBtn.type = "button";
+  deleteBtn.className = "delete-session";
+  deleteBtn.textContent = "Löschen";
+  deleteBtn.setAttribute("aria-label", `Session ${time.textContent} löschen`);
+  deleteBtn.addEventListener("click", () => deleteSession(x.id));
+  actions.appendChild(deleteBtn);
+
+  li.append(time, dur, c, actions);
   return li;
 }
 
@@ -276,6 +286,31 @@ async function confirmCheckout() {
   if (!ok) {
     s.ended_at = original.ended_at;
     s.comment = original.comment;
+    render();
+  }
+}
+
+async function deleteSession(id) {
+  const s = state.data.sessions.find((x) => x.id === id);
+  if (!s) return;
+  const label = `${fmtClock(s.started_at)} – ${s.ended_at ? fmtClock(s.ended_at) : "läuft"}`;
+  if (!confirm(`${label} wirklich löschen?`)) return;
+
+  const originalSessions = state.data.sessions.slice();
+  state.data.sessions = state.data.sessions.filter((x) => x.id !== id);
+  if (state.pendingCheckoutId === id) cancelCheckout();
+  if (
+    state.dashboardSelection &&
+    state.dashboardSelection.user === s.user &&
+    state.dashboardSelection.day === dayKey(new Date(s.started_at)) &&
+    !sessionsForUserDay(s.user, new Date(s.started_at)).length
+  ) {
+    state.dashboardSelection = null;
+  }
+  render();
+  const ok = await saveData();
+  if (!ok) {
+    state.data.sessions = originalSessions;
     render();
   }
 }

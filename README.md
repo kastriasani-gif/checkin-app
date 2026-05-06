@@ -9,7 +9,7 @@ brauchen keinen GitHub Token im Browser.
 - Mindestens 5x pro Woche einchecken
 - Mindestens 1 Stunde pro Tag (mehrere Sessions möglich)
 - Tracker startet bei Check-in, läuft bis Check-out
-- Beim Check-out kurzer Kommentar was gemacht wurde
+- Beim Check-out optionaler Kommentar was gemacht wurde
 - Dashboard zeigt Wochenübersicht für beide User
 
 ## Setup
