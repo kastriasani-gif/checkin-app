@@ -41,6 +41,13 @@
       "started_at": "2026-05-06T07:17:49.401Z",
       "ended_at": "2026-05-06T07:18:00.773Z",
       "comment": "test"
+    },
+    {
+      "id": "7efb9d80-9ac8-4d0e-9514-257e5375bc9b",
+      "user": "kastri",
+      "started_at": "2026-05-06T07:18:20.715Z",
+      "ended_at": null,
+      "comment": null
     }
   ]
 }
