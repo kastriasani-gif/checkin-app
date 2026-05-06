@@ -34,6 +34,13 @@
       "started_at": "2026-05-05T19:50:00.000Z",
       "ended_at": "2026-05-05T20:00:00.000Z",
       "comment": "Email an Kaeufer vom Kurs gesendet. Status update und mich nochmals entschuldigt, das nicht ready. (nachtraeglich)"
+    },
+    {
+      "id": "write-test-1778050994505",
+      "user": "kastri",
+      "started_at": "2026-05-06T00:00:00.000Z",
+      "ended_at": "2026-05-06T00:01:00.000Z",
+      "comment": "write permission test"
     }
   ]
 }
