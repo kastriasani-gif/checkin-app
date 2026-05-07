@@ -41,6 +41,13 @@
       "started_at": "2026-05-07T04:01:31.679Z",
       "ended_at": "2026-05-07T05:02:44.751Z",
       "comment": "Claude setup for video creating:\nCreated different Skills for video creating in claude via \nhttps://github.com/heygen-com/hyperframes\nhttps://github.com/nateherkai/hyperframes-student-kit\nhttps://github.com/browser-use/video-use\nto cut, edit (with animation) and output the video.\nUsed Nate Herk video guide (last time stamp at 18:19)\nhttps://www.youtube.com/watch?v=Aw3BkmhYu4I&t=44s"
+    },
+    {
+      "id": "caa4b573-9b07-4a71-868a-6aad843708d2",
+      "user": "thomas",
+      "started_at": "2026-05-07T17:55:30.881Z",
+      "ended_at": null,
+      "comment": null
     }
   ]
 }
