@@ -46,8 +46,8 @@
       "id": "caa4b573-9b07-4a71-868a-6aad843708d2",
       "user": "thomas",
       "started_at": "2026-05-07T17:55:30.881Z",
-      "ended_at": null,
-      "comment": null
+      "ended_at": "2026-05-07T19:29:14.219Z",
+      "comment": "member area für video lektionen erstellt inkl. db und user auth. alles getestet sieht gut aus. auf prod deployed. test erfolgreich."
     }
   ]
 }
