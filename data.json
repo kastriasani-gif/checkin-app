@@ -48,6 +48,13 @@
       "started_at": "2026-05-07T17:55:30.881Z",
       "ended_at": "2026-05-07T19:29:14.219Z",
       "comment": "member area für video lektionen erstellt inkl. db und user auth. alles getestet sieht gut aus. auf prod deployed. test erfolgreich."
+    },
+    {
+      "id": "d6824b9c-6850-4ea1-ab34-c65dc1aa3c85",
+      "user": "thomas",
+      "started_at": "2026-05-08T07:31:21.525Z",
+      "ended_at": null,
+      "comment": null
     }
   ]
 }
