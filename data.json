@@ -69,6 +69,13 @@
       "started_at": "2026-05-09T08:16:11.355Z",
       "ended_at": "2026-05-09T09:33:24.387Z",
       "comment": "spanisch cristina. seo subseiten für städte (bern, st. gallen usw.) hinzugefügt, interne verlinkung, content jede seite angepasst. google search console sitemap hochgeladen.\nauf prod deployed"
+    },
+    {
+      "id": "bbc981f7-4d73-477b-93ef-1862d54bbf7d",
+      "user": "kastri",
+      "started_at": "2026-05-09T16:14:57.130Z",
+      "ended_at": null,
+      "comment": null
     }
   ]
 }
