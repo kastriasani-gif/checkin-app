@@ -76,6 +76,13 @@
       "started_at": "2026-05-09T16:14:57.130Z",
       "ended_at": "2026-05-09T16:38:38.288Z",
       "comment": "video created with hyperframes via claude"
+    },
+    {
+      "id": "704e23bc-f34f-41db-be41-46c762bbcb09",
+      "user": "kastri",
+      "started_at": "2026-05-09T16:42:46.581Z",
+      "ended_at": null,
+      "comment": null
     }
   ]
 }
