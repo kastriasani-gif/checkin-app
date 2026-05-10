@@ -97,6 +97,13 @@
       "started_at": "2026-05-10T09:35:56.282Z",
       "ended_at": "2026-05-10T09:52:29.661Z",
       "comment": "linkedin automation weiterentwickeln"
+    },
+    {
+      "id": "90b9987c-5eac-43ae-a306-6afd7fc0cb74",
+      "user": "thomas",
+      "started_at": "2026-05-10T10:30:20.709Z",
+      "ended_at": null,
+      "comment": null
     }
   ]
 }
