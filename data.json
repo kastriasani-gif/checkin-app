@@ -104,6 +104,13 @@
       "started_at": "2026-05-10T10:30:20.709Z",
       "ended_at": null,
       "comment": null
+    },
+    {
+      "id": "7e08b400-22c1-47b5-80fc-f508603756ff",
+      "user": "kastri",
+      "started_at": "2026-05-10T15:53:46.505Z",
+      "ended_at": null,
+      "comment": null
     }
   ]
 }
