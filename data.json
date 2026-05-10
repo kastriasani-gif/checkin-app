@@ -104,6 +104,13 @@
       "started_at": "2026-05-10T15:53:46.505Z",
       "ended_at": null,
       "comment": null
+    },
+    {
+      "id": "4da7224f-b78f-48f5-9a65-5da9caf0ffef",
+      "user": "thomas",
+      "started_at": "2026-05-10T17:26:05.705Z",
+      "ended_at": null,
+      "comment": null
     }
   ]
 }
