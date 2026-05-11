@@ -139,6 +139,13 @@
       "started_at": "2026-05-11T18:18:23.566Z",
       "ended_at": "2026-05-11T18:24:02.176Z",
       "comment": "spanisch, und nochmals ein post"
+    },
+    {
+      "id": "e61ebd2c-827d-40c6-acb6-0a500671d927",
+      "user": "thomas",
+      "started_at": "2026-05-11T19:13:01.053Z",
+      "ended_at": null,
+      "comment": null
     }
   ]
 }
