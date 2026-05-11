@@ -508,6 +508,117 @@ textarea:focus {
   }
 }
 
+.month-board {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.month-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 14px 16px;
+}
+
+.month-head {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.month-label {
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.month-tag {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--accent);
+  background: var(--accent-soft);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.month-row {
+  display: grid;
+  grid-template-columns: 64px 1fr auto;
+  align-items: center;
+  gap: 12px;
+  padding: 4px 0;
+}
+
+.month-row + .month-row {
+  border-top: 1px solid var(--border);
+  margin-top: 4px;
+  padding-top: 8px;
+}
+
+.month-user {
+  font-size: 12px;
+  color: var(--muted);
+  text-transform: capitalize;
+}
+
+.month-grid {
+  display: grid;
+  grid-template-columns: repeat(31, 1fr);
+  gap: 2px;
+  min-width: 0;
+}
+
+.month-day {
+  aspect-ratio: 1 / 1;
+  border-radius: 2px;
+  background: #eeeeee;
+  min-width: 8px;
+}
+
+.month-day.b0 { background: #ececec; }
+.month-day.b1 { background: #d4e7da; }
+.month-day.b2 { background: #a7cdb3; }
+.month-day.b3 { background: var(--accent); }
+
+.month-day.inactive {
+  background: transparent;
+  border: 1px dashed var(--border);
+}
+
+.month-total {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  min-width: 70px;
+}
+
+.month-total .primary {
+  font-size: 13px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+
+.month-total .secondary {
+  font-size: 11px;
+  color: var(--muted);
+}
+
+@media (max-width: 560px) {
+  .month-row {
+    grid-template-columns: 48px 1fr;
+    grid-template-areas:
+      "user grid"
+      ".    total";
+    gap: 6px 8px;
+  }
+  .month-user { grid-area: user; }
+  .month-grid { grid-area: grid; gap: 1px; }
+  .month-total { grid-area: total; align-items: flex-end; min-width: 0; }
+}
+
 footer {
   display: flex;
   justify-content: space-between;

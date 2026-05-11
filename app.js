@@ -659,6 +659,20 @@ function renderWeeksHistory() {
   });
 }
 
+function dayHoursForUser(d, user) {
+  const ms = state.data.sessions
+    .filter((s) => s.user === user && sameDay(new Date(s.started_at), d))
+    .reduce((sum, s) => sum + sessionDurationMs(s), 0);
+  return ms / 3600000;
+}
+
+function bucketForHours(h) {
+  if (h <= 0) return 0;
+  if (h < 1) return 1;
+  if (h < 2) return 2;
+  return 3;
+}
+
 function renderMonthsHistory() {
   const months = listMonths();
   if (months.length === 0) {
@@ -667,29 +681,90 @@ function renderMonthsHistory() {
   }
   els.monthsSection.classList.remove("hidden");
   els.monthsTable.innerHTML = "";
+  els.monthsTable.className = "month-board";
 
-  appendOverviewCell(els.monthsTable, { header: true, primary: "Monat" });
-  USERS.forEach((u) =>
-    appendOverviewCell(els.monthsTable, { header: true, primary: u })
-  );
+  const today = startOfDay(new Date());
+  const startBoundary = startOfDay(START_DATE);
 
   months.forEach((monthStart) => {
-    const label = monthStart.toLocaleDateString("de-DE", {
+    const card = document.createElement("div");
+    card.className = "month-card";
+
+    const head = document.createElement("div");
+    head.className = "month-head";
+    const label = document.createElement("div");
+    label.className = "month-label";
+    label.textContent = monthStart.toLocaleDateString("de-DE", {
       month: "long",
       year: "numeric",
     });
-    const running = isCurrentMonth(monthStart);
-    appendOverviewCell(els.monthsTable, {
-      primary: label,
-      secondary: running ? "läuft" : "",
-    });
+    head.appendChild(label);
+    if (isCurrentMonth(monthStart)) {
+      const tag = document.createElement("span");
+      tag.className = "month-tag";
+      tag.textContent = "läuft";
+      head.appendChild(tag);
+    }
+    card.appendChild(head);
+
+    const monthEnd = new Date(monthStart);
+    monthEnd.setMonth(monthEnd.getMonth() + 1);
+    const daysInMonth = Math.round(
+      (monthEnd - monthStart) / 86400000
+    );
+
     USERS.forEach((u) => {
-      const { totalMs, activeDays } = monthStatsForUser(monthStart, u);
-      appendOverviewCell(els.monthsTable, {
-        primary: fmtHoursMinutes(totalMs),
-        secondary: `${activeDays} ${activeDays === 1 ? "Tag" : "Tage"} aktiv`,
-      });
+      const row = document.createElement("div");
+      row.className = "month-row";
+      const name = document.createElement("div");
+      name.className = "month-user";
+      name.textContent = u;
+      row.appendChild(name);
+
+      const grid = document.createElement("div");
+      grid.className = "month-grid";
+      let totalMs = 0;
+      let activeDays = 0;
+      for (let i = 0; i < daysInMonth; i++) {
+        const d = new Date(monthStart);
+        d.setDate(d.getDate() + i);
+        const cell = document.createElement("div");
+        cell.className = "month-day";
+        const isFuture = d > today;
+        const isBeforeStartDay = d < startBoundary;
+        if (isFuture || isBeforeStartDay) {
+          cell.classList.add("inactive");
+          cell.setAttribute("aria-label", `${fmtShortDate(d)} – noch nicht`);
+        } else {
+          const h = dayHoursForUser(d, u);
+          const b = bucketForHours(h);
+          cell.classList.add(`b${b}`);
+          const dayMs = h * 3600000;
+          totalMs += dayMs;
+          if (dayMs > 0) activeDays++;
+          cell.setAttribute(
+            "aria-label",
+            `${fmtShortDate(d)} – ${fmtHoursMinutes(dayMs)}`
+          );
+          cell.title = `${fmtShortDate(d)} · ${fmtHoursMinutes(dayMs)}`;
+        }
+        grid.appendChild(cell);
+      }
+      row.appendChild(grid);
+
+      const total = document.createElement("div");
+      total.className = "month-total";
+      total.innerHTML = `<span class="primary">${fmtHoursMinutes(
+        totalMs
+      )}</span><span class="secondary">${activeDays} ${
+        activeDays === 1 ? "Tag" : "Tage"
+      }</span>`;
+      row.appendChild(total);
+
+      card.appendChild(row);
     });
+
+    els.monthsTable.appendChild(card);
   });
 }
 
