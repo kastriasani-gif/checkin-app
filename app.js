@@ -666,11 +666,8 @@ function dayHoursForUser(d, user) {
   return ms / 3600000;
 }
 
-function bucketForHours(h) {
-  if (h <= 0) return 0;
-  if (h < 1) return 1;
-  if (h < 2) return 2;
-  return 3;
+function metClassForHours(h) {
+  return h >= 1 ? "met" : "missed";
 }
 
 function renderMonthsHistory() {
@@ -713,6 +710,26 @@ function renderMonthsHistory() {
       (monthEnd - monthStart) / 86400000
     );
 
+    const axis = document.createElement("div");
+    axis.className = "month-axis";
+    const axisSpacerLeft = document.createElement("div");
+    axis.appendChild(axisSpacerLeft);
+    const axisGrid = document.createElement("div");
+    axisGrid.className = "month-grid";
+    for (let i = 0; i < daysInMonth; i++) {
+      const d = new Date(monthStart);
+      d.setDate(d.getDate() + i);
+      const num = document.createElement("div");
+      num.className = "month-axis-day";
+      if (sameDay(d, today)) num.classList.add("today");
+      num.textContent = String(i + 1);
+      axisGrid.appendChild(num);
+    }
+    axis.appendChild(axisGrid);
+    const axisSpacerRight = document.createElement("div");
+    axis.appendChild(axisSpacerRight);
+    card.appendChild(axis);
+
     USERS.forEach((u) => {
       const row = document.createElement("div");
       row.className = "month-row";
@@ -737,8 +754,7 @@ function renderMonthsHistory() {
           cell.setAttribute("aria-label", `${fmtShortDate(d)} – noch nicht`);
         } else {
           const h = dayHoursForUser(d, u);
-          const b = bucketForHours(h);
-          cell.classList.add(`b${b}`);
+          cell.classList.add(metClassForHours(h));
           const dayMs = h * 3600000;
           totalMs += dayMs;
           if (dayMs > 0) activeDays++;

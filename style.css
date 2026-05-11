@@ -544,6 +544,35 @@ textarea:focus {
   border-radius: 4px;
 }
 
+.month-axis {
+  display: grid;
+  grid-template-columns: 64px 1fr auto;
+  gap: 12px;
+  margin-bottom: 4px;
+}
+
+.month-axis .month-grid {
+  align-items: end;
+}
+
+.month-axis-day {
+  font-size: 9px;
+  color: var(--muted);
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  padding-bottom: 2px;
+}
+
+.month-axis-day.today {
+  color: var(--text);
+  font-weight: 600;
+}
+
+.month-axis > div:last-child {
+  min-width: 70px;
+}
+
 .month-row {
   display: grid;
   grid-template-columns: 64px 1fr auto;
@@ -578,10 +607,8 @@ textarea:focus {
   min-width: 8px;
 }
 
-.month-day.b0 { background: #ececec; }
-.month-day.b1 { background: #d4e7da; }
-.month-day.b2 { background: #a7cdb3; }
-.month-day.b3 { background: var(--accent); }
+.month-day.met { background: var(--accent); }
+.month-day.missed { background: var(--danger); }
 
 .month-day.inactive {
   background: transparent;
