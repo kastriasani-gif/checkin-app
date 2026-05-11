@@ -443,6 +443,71 @@ textarea:focus {
   margin-top: 24px;
 }
 
+.overview-section {
+  margin-top: 32px;
+}
+
+.overview-table {
+  display: grid;
+  grid-template-columns: minmax(120px, 1.3fr) 1fr 1fr;
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.overview-cell {
+  background: var(--surface);
+  padding: 12px 14px;
+  font-size: 13px;
+}
+
+.overview-cell.header {
+  background: var(--bg);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+}
+
+.overview-cell.header .primary {
+  font-weight: 500;
+  font-size: 11px;
+  text-transform: capitalize;
+  letter-spacing: 0.06em;
+}
+
+.overview-cell .primary {
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+
+.overview-cell .secondary {
+  color: var(--muted);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  margin-top: 2px;
+}
+
+.overview-cell.met .primary {
+  color: var(--accent);
+}
+
+.overview-cell.missed .primary {
+  color: var(--danger);
+}
+
+@media (max-width: 560px) {
+  .overview-table {
+    grid-template-columns: minmax(96px, 1.2fr) 1fr 1fr;
+    font-size: 12px;
+  }
+  .overview-cell {
+    padding: 10px 10px;
+  }
+}
+
 footer {
   display: flex;
   justify-content: space-between;

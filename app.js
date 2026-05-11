@@ -40,6 +40,10 @@ const els = {
   dashboardHistory: document.getElementById("dashboard-history"),
   historyLabel: document.getElementById("history-label"),
   historyList: document.getElementById("history-list"),
+  weeksSection: document.getElementById("weeks-section"),
+  weeksTable: document.getElementById("weeks-table"),
+  monthsSection: document.getElementById("months-section"),
+  monthsTable: document.getElementById("months-table"),
   syncState: document.getElementById("sync-state"),
 };
 
@@ -86,6 +90,90 @@ function dashboardWindowStart() {
   const start = startOfDay(START_DATE);
   const weekStart = startOfWeek(today);
   return weekStart < start ? start : weekStart;
+}
+
+function isoWeekNumber(d) {
+  const date = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+  date.setUTCDate(date.getUTCDate() + 4 - (date.getUTCDay() || 7));
+  const yearStart = new Date(Date.UTC(date.getUTCFullYear(), 0, 1));
+  return Math.ceil(((date - yearStart) / 86400000 + 1) / 7);
+}
+
+function fmtShortDate(d) {
+  return d.toLocaleDateString("de-DE", { day: "2-digit", month: "2-digit" });
+}
+
+function listPastWeeks() {
+  const startBoundary = startOfWeek(START_DATE);
+  const currentWeekStart = startOfWeek(new Date());
+  const weeks = [];
+  const cursor = new Date(startBoundary);
+  while (cursor < currentWeekStart) {
+    const start = new Date(cursor);
+    const end = new Date(cursor);
+    end.setDate(end.getDate() + 6);
+    weeks.push({ start, end });
+    cursor.setDate(cursor.getDate() + 7);
+  }
+  return weeks.reverse();
+}
+
+function weekStatsForUser(weekStart, user) {
+  const weekEndExclusive = new Date(weekStart);
+  weekEndExclusive.setDate(weekEndExclusive.getDate() + 7);
+  const sessions = state.data.sessions.filter(
+    (s) =>
+      s.user === user &&
+      new Date(s.started_at) >= weekStart &&
+      new Date(s.started_at) < weekEndExclusive
+  );
+  const totalMs = sessions.reduce((sum, s) => sum + sessionDurationMs(s), 0);
+  let daysMet = 0;
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(weekStart);
+    d.setDate(d.getDate() + i);
+    const dayMs = sessions
+      .filter((s) => sameDay(new Date(s.started_at), d))
+      .reduce((sum, s) => sum + sessionDurationMs(s), 0);
+    if (dayMs >= 3600000) daysMet++;
+  }
+  return { totalMs, daysMet, met: daysMet >= 5 };
+}
+
+function listMonths() {
+  const today = new Date();
+  const start = new Date(START_DATE.getFullYear(), START_DATE.getMonth(), 1);
+  const end = new Date(today.getFullYear(), today.getMonth(), 1);
+  const months = [];
+  const cursor = new Date(start);
+  while (cursor <= end) {
+    months.push(new Date(cursor));
+    cursor.setMonth(cursor.getMonth() + 1);
+  }
+  return months.reverse();
+}
+
+function monthStatsForUser(monthStart, user) {
+  const monthEnd = new Date(monthStart);
+  monthEnd.setMonth(monthEnd.getMonth() + 1);
+  const sessions = state.data.sessions.filter(
+    (s) =>
+      s.user === user &&
+      new Date(s.started_at) >= monthStart &&
+      new Date(s.started_at) < monthEnd
+  );
+  const totalMs = sessions.reduce((sum, s) => sum + sessionDurationMs(s), 0);
+  const activeDays = new Set();
+  sessions.forEach((s) => activeDays.add(dayKey(new Date(s.started_at))));
+  return { totalMs, activeDays: activeDays.size };
+}
+
+function isCurrentMonth(monthStart) {
+  const today = new Date();
+  return (
+    monthStart.getFullYear() === today.getFullYear() &&
+    monthStart.getMonth() === today.getMonth()
+  );
 }
 
 function fmtDayLabel(d) {
@@ -512,6 +600,97 @@ function renderDashboard() {
   });
 
   renderDashboardHistory();
+  renderWeeksHistory();
+  renderMonthsHistory();
+}
+
+const USERS = ["kastri", "thomas"];
+
+function appendOverviewCell(parent, opts = {}) {
+  const cell = document.createElement("div");
+  cell.className = "overview-cell";
+  if (opts.header) cell.classList.add("header");
+  if (opts.classes) opts.classes.forEach((c) => cell.classList.add(c));
+  if (opts.primary !== undefined) {
+    const p = document.createElement("div");
+    p.className = "primary";
+    p.textContent = opts.primary;
+    cell.appendChild(p);
+  }
+  if (opts.secondary !== undefined) {
+    const s = document.createElement("div");
+    s.className = "secondary";
+    s.textContent = opts.secondary;
+    cell.appendChild(s);
+  }
+  parent.appendChild(cell);
+  return cell;
+}
+
+function renderWeeksHistory() {
+  const weeks = listPastWeeks();
+  if (weeks.length === 0) {
+    els.weeksSection.classList.add("hidden");
+    return;
+  }
+  els.weeksSection.classList.remove("hidden");
+  els.weeksTable.innerHTML = "";
+
+  appendOverviewCell(els.weeksTable, { header: true, primary: "Woche" });
+  USERS.forEach((u) =>
+    appendOverviewCell(els.weeksTable, { header: true, primary: u })
+  );
+
+  weeks.forEach(({ start, end }) => {
+    const kw = isoWeekNumber(start);
+    appendOverviewCell(els.weeksTable, {
+      primary: `KW ${kw}`,
+      secondary: `${fmtShortDate(start)}–${fmtShortDate(end)}`,
+    });
+    USERS.forEach((u) => {
+      const { totalMs, daysMet, met } = weekStatsForUser(start, u);
+      const mark = met ? "✓" : "✗";
+      appendOverviewCell(els.weeksTable, {
+        primary: `${daysMet}/5 ${mark}`,
+        secondary: fmtHoursMinutes(totalMs),
+        classes: [met ? "met" : "missed"],
+      });
+    });
+  });
+}
+
+function renderMonthsHistory() {
+  const months = listMonths();
+  if (months.length === 0) {
+    els.monthsSection.classList.add("hidden");
+    return;
+  }
+  els.monthsSection.classList.remove("hidden");
+  els.monthsTable.innerHTML = "";
+
+  appendOverviewCell(els.monthsTable, { header: true, primary: "Monat" });
+  USERS.forEach((u) =>
+    appendOverviewCell(els.monthsTable, { header: true, primary: u })
+  );
+
+  months.forEach((monthStart) => {
+    const label = monthStart.toLocaleDateString("de-DE", {
+      month: "long",
+      year: "numeric",
+    });
+    const running = isCurrentMonth(monthStart);
+    appendOverviewCell(els.monthsTable, {
+      primary: label,
+      secondary: running ? "läuft" : "",
+    });
+    USERS.forEach((u) => {
+      const { totalMs, activeDays } = monthStatsForUser(monthStart, u);
+      appendOverviewCell(els.monthsTable, {
+        primary: fmtHoursMinutes(totalMs),
+        secondary: `${activeDays} ${activeDays === 1 ? "Tag" : "Tage"} aktiv`,
+      });
+    });
+  });
 }
 
 function sessionsForUserDay(user, d) {
