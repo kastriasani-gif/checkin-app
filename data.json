@@ -160,6 +160,13 @@
       "started_at": "2026-05-12T20:41:47.834Z",
       "ended_at": "2026-05-12T20:46:59.300Z",
       "comment": "keline anpassungen an der budget app"
+    },
+    {
+      "id": "e00aff12-0c86-40cf-b6b4-798f151f80b3",
+      "user": "kastri",
+      "started_at": "2026-05-12T09:00:00.000Z",
+      "ended_at": "2026-05-12T10:03:00.000Z",
+      "comment": null
     }
   ]
 }
