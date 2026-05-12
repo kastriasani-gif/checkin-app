@@ -153,6 +153,13 @@
       "started_at": "2026-05-12T17:12:50.356Z",
       "ended_at": "2026-05-12T18:43:22.050Z",
       "comment": "budget app erste funktioniered version erstellt. diverse bugs am fixen."
+    },
+    {
+      "id": "2870fab7-dca7-4eeb-a4e7-360ac14b10c2",
+      "user": "thomas",
+      "started_at": "2026-05-12T20:41:47.834Z",
+      "ended_at": null,
+      "comment": null
     }
   ]
 }
