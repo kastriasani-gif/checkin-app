@@ -195,6 +195,13 @@
       "started_at": "2026-05-14T12:40:14.865Z",
       "ended_at": "2026-05-14T13:08:24.382Z",
       "comment": "fuck warum habe ich eine budget app gemacht, tausend bugs, still fixing..."
+    },
+    {
+      "id": "512bb15e-9032-42db-a02a-533086655b35",
+      "user": "thomas",
+      "started_at": "2026-05-14T20:06:19.629Z",
+      "ended_at": null,
+      "comment": null
     }
   ]
 }
