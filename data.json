@@ -188,6 +188,13 @@
       "started_at": "2026-05-14T07:52:55.821Z",
       "ended_at": "2026-05-14T09:36:51.762Z",
       "comment": "budget tracker, 1million bugs gefixed, funktioniert jetzt lokal ohne fehler und daten werden gespeichert. claude template erstellt, für weitere projekte"
+    },
+    {
+      "id": "9311b990-9384-4b64-b350-f8f998ac2b9a",
+      "user": "thomas",
+      "started_at": "2026-05-14T12:40:14.865Z",
+      "ended_at": null,
+      "comment": null
     }
   ]
 }
