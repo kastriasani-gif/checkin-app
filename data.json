@@ -202,6 +202,13 @@
       "started_at": "2026-05-14T20:06:19.629Z",
       "ended_at": "2026-05-14T21:39:50.950Z",
       "comment": "weitere app erstellt, weekly planner. erste version erstellt"
+    },
+    {
+      "id": "fda82b26-4bda-4a3c-933b-7cb45b4eb201",
+      "user": "thomas",
+      "started_at": "2026-05-15T08:22:43.354Z",
+      "ended_at": null,
+      "comment": null
     }
   ]
 }
