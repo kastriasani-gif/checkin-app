@@ -216,6 +216,13 @@
       "started_at": "2026-05-15T15:10:10.448Z",
       "ended_at": "2026-05-15T15:52:47.362Z",
       "comment": "calendar app, weeky view hinzugefügt."
+    },
+    {
+      "id": "6cc3d38f-c81b-4374-9f70-d3bccd1799d0",
+      "user": "thomas",
+      "started_at": "2026-05-16T18:34:13.012Z",
+      "ended_at": null,
+      "comment": null
     }
   ]
 }
