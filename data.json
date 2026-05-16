@@ -223,6 +223,13 @@
       "started_at": "2026-05-16T18:34:13.012Z",
       "ended_at": "2026-05-16T19:45:45.445Z",
       "comment": "pomodore timer eingebaut. bux fixes, dark modus angepasst."
+    },
+    {
+      "id": "f79ab4c8-c325-4396-ba3c-513cabaaa885",
+      "user": "kastri",
+      "started_at": "2026-05-16T20:48:05.566Z",
+      "ended_at": null,
+      "comment": null
     }
   ]
 }
