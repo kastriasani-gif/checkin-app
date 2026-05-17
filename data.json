@@ -237,6 +237,13 @@
       "started_at": "2026-05-17T10:38:21.006Z",
       "ended_at": null,
       "comment": null
+    },
+    {
+      "id": "003437c8-5b2d-401b-8b20-80eaed0a2c4e",
+      "user": "thomas",
+      "started_at": "2026-05-17T11:39:50.129Z",
+      "ended_at": null,
+      "comment": null
     }
   ]
 }
