@@ -251,6 +251,13 @@
       "started_at": "2026-05-18T17:50:29.707Z",
       "ended_at": "2026-05-18T19:23:29.110Z",
       "comment": "produktbilder erstellt für app"
+    },
+    {
+      "id": "de363ee3-3b69-4309-938d-58c85689c12c",
+      "user": "kastri",
+      "started_at": "2026-05-18T21:53:20.010Z",
+      "ended_at": null,
+      "comment": null
     }
   ]
 }
