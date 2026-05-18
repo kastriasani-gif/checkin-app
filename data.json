@@ -244,6 +244,13 @@
       "started_at": "2026-05-17T11:39:50.129Z",
       "ended_at": "2026-05-17T13:06:39.085Z",
       "comment": "monthly view eingebaut, design polish, pomoro timer angepasst. loakler test"
+    },
+    {
+      "id": "e344f304-3077-4432-a4b0-21c738c605c4",
+      "user": "thomas",
+      "started_at": "2026-05-18T17:50:29.707Z",
+      "ended_at": null,
+      "comment": null
     }
   ]
 }
