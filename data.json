@@ -270,8 +270,8 @@
       "id": "9165a6f0-fc9f-4107-8f80-74bced4836e8",
       "user": "kastri",
       "started_at": "2026-05-19T15:33:47.066Z",
-      "ended_at": null,
-      "comment": null
+      "ended_at": "2026-05-19T16:25:55.299Z",
+      "comment": "openai & anthropic als option eingebaut. weitere bugs entfernt"
     }
   ]
 }
