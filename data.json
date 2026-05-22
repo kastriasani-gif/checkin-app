@@ -300,6 +300,13 @@
       "started_at": "2026-05-22T17:14:38.575Z",
       "ended_at": null,
       "comment": null
+    },
+    {
+      "id": "27c33268-2e44-443e-a39b-75d5d65e418b",
+      "user": "thomas",
+      "started_at": "2026-05-22T17:48:48.979Z",
+      "ended_at": null,
+      "comment": null
     }
   ]
 }
