@@ -293,6 +293,13 @@
       "started_at": "2026-05-21T19:32:03.559Z",
       "ended_at": "2026-05-21T21:18:46.770Z",
       "comment": "design app kleine anpassungen. dark mode überarbeitet"
+    },
+    {
+      "id": "cf964d8a-5fa8-411b-b48d-57ac23a3cde5",
+      "user": "kastri",
+      "started_at": "2026-05-22T17:14:38.575Z",
+      "ended_at": null,
+      "comment": null
     }
   ]
 }
