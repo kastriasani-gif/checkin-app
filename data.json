@@ -300,6 +300,13 @@
       "started_at": "2026-05-22T17:48:48.979Z",
       "ended_at": "2026-05-22T19:21:00.306Z",
       "comment": "sales page für planner app erstellt. sieht scheisse aus.\ndog course mit creator austausch, videos fertig aber müssen angepasst werdne. db reaktiviert. login prozess überabeitet & kleine anpassungen"
+    },
+    {
+      "id": "17ec3617-4f3b-4ec3-875f-41e465015031",
+      "user": "kastri",
+      "started_at": "2026-05-22T21:00:20.192Z",
+      "ended_at": null,
+      "comment": null
     }
   ]
 }
