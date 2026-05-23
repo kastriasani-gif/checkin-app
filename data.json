@@ -307,6 +307,13 @@
       "started_at": "2026-05-22T21:00:20.192Z",
       "ended_at": "2026-05-22T22:03:04.336Z",
       "comment": "Testing App"
+    },
+    {
+      "id": "ef26c498-81fa-4c77-b2a2-d17deb56e538",
+      "user": "thomas",
+      "started_at": "2026-05-23T07:06:00.190Z",
+      "ended_at": null,
+      "comment": null
     }
   ]
 }
