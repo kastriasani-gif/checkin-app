@@ -314,6 +314,13 @@
       "started_at": "2026-05-23T07:06:00.190Z",
       "ended_at": "2026-05-23T08:11:14.598Z",
       "comment": "angepasste videos hochgeladen, welcome email angepasst, discount code erstellt. käufer informiert"
+    },
+    {
+      "id": "e798c714-c957-4808-8739-3c8eb5b7d99b",
+      "user": "thomas",
+      "started_at": "2026-05-24T07:44:18.613Z",
+      "ended_at": null,
+      "comment": null
     }
   ]
 }
