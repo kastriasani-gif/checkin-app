@@ -335,6 +335,13 @@
       "started_at": "2026-05-24T19:52:03.994Z",
       "ended_at": "2026-05-24T22:07:01.893Z",
       "comment": "prep. video für social channels"
+    },
+    {
+      "id": "a43b3432-6406-4b05-903f-d9a84a12685b",
+      "user": "thomas",
+      "started_at": "2026-05-25T11:23:28.035Z",
+      "ended_at": null,
+      "comment": null
     }
   ]
 }
