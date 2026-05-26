@@ -356,6 +356,13 @@
       "started_at": "2026-05-25T20:59:50.568Z",
       "ended_at": "2026-05-25T22:08:42.195Z",
       "comment": "automationsscript"
+    },
+    {
+      "id": "1f6b85a4-e67f-4299-ac75-3c93014b924e",
+      "user": "thomas",
+      "started_at": "2026-05-26T13:31:17.625Z",
+      "ended_at": null,
+      "comment": null
     }
   ]
 }
