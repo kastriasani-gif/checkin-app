@@ -363,6 +363,13 @@
       "started_at": "2026-05-26T13:31:17.625Z",
       "ended_at": "2026-05-26T15:51:24.247Z",
       "comment": "planner app, month view überarbeitet"
+    },
+    {
+      "id": "98a79aca-1e8e-444d-8488-016da72badfb",
+      "user": "thomas",
+      "started_at": "2026-05-26T17:13:18.887Z",
+      "ended_at": null,
+      "comment": null
     }
   ]
 }
