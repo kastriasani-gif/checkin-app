@@ -377,6 +377,13 @@
       "started_at": "2026-05-26T20:09:48.810Z",
       "ended_at": "2026-05-26T21:11:27.109Z",
       "comment": "workflow automation"
+    },
+    {
+      "id": "6bd87846-faf4-48f7-b6b6-923928240cc2",
+      "user": "thomas",
+      "started_at": "2026-05-27T17:53:19.067Z",
+      "ended_at": null,
+      "comment": null
     }
   ]
 }
