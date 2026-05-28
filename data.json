@@ -391,6 +391,13 @@
       "started_at": "2026-05-27T19:06:27.292Z",
       "ended_at": "2026-05-27T19:51:33.500Z",
       "comment": "neue etsy bilder erstellt"
+    },
+    {
+      "id": "7112c744-1521-48a5-8a73-41797bdbc874",
+      "user": "thomas",
+      "started_at": "2026-05-28T19:03:47.014Z",
+      "ended_at": null,
+      "comment": null
     }
   ]
 }
