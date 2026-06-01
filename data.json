@@ -412,6 +412,13 @@
       "started_at": "2026-06-01T17:58:37.936Z",
       "ended_at": "2026-06-01T19:19:21.441Z",
       "comment": "ad peformance zahlen analysiert, gedanken gemacht zur bedeutung und was ich als nächstes testen sollte"
+    },
+    {
+      "id": "7a64f950-f497-486e-a86f-1d5f055df370",
+      "user": "kastri",
+      "started_at": "2026-06-01T20:22:39.599Z",
+      "ended_at": null,
+      "comment": null
     }
   ]
 }
