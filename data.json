@@ -440,6 +440,13 @@
       "started_at": "2026-06-03T17:00:06.465Z",
       "ended_at": "2026-06-03T19:18:29.289Z",
       "comment": "etsy listing übearbeitet, neues headline, app demo erstellt"
+    },
+    {
+      "id": "acfd063b-14f9-42d5-b598-2e0fa310c24d",
+      "user": "kastri",
+      "started_at": "2026-06-04T11:31:49.318Z",
+      "ended_at": null,
+      "comment": null
     }
   ]
 }
