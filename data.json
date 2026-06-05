@@ -447,6 +447,13 @@
       "started_at": "2026-06-04T11:31:49.318Z",
       "ended_at": "2026-06-04T16:48:52.510Z",
       "comment": "niche checking"
+    },
+    {
+      "id": "47db3c9f-6ef7-4ca0-97ab-0b136dce006a",
+      "user": "kastri",
+      "started_at": "2026-06-05T20:00:24.459Z",
+      "ended_at": null,
+      "comment": null
     }
   ]
 }
