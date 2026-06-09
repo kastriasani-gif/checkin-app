@@ -461,6 +461,13 @@
       "started_at": "2026-06-07T18:42:11.344Z",
       "ended_at": "2026-06-07T19:48:56.157Z",
       "comment": "salespage copy angepasst"
+    },
+    {
+      "id": "24c6f0d9-32b2-42f5-898a-61aed0910cdc",
+      "user": "thomas",
+      "started_at": "2026-06-09T17:56:24.079Z",
+      "ended_at": null,
+      "comment": null
     }
   ]
 }
